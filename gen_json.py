@@ -3,9 +3,18 @@ import re
 import os
 from pathlib import Path
 
+from datetime import datetime, timedelta
+
+# --- 設定 ---
+# 読み込むMarkdownファイルの名前
+TARGET_MD = '2026-03-20_imakentei_2週間投稿コンテンツ案.md'
+# Day1 の投稿開始日 (YYYY-MM-DD形式)
+START_DATE = '2026-03-23'
+# -----------
+
 # クライアントの環境・GitHub両方で動くように相対パスで定義
 base_dir = Path(__file__).parent
-md_path = base_dir / '2026-03-20_imakentei_2週間投稿コンテンツ案.md'
+md_path = base_dir / TARGET_MD
 img_dir = base_dir / '投稿用画像'
 output_path = base_dir / 'post_data.json'
 
@@ -16,11 +25,9 @@ with open(md_path, 'r', encoding='utf-8') as f:
 days = list(re.split(r'### Day\d+', content))[1:]
 post_data = []
 
-# 日付のリスト
-dates = [
-    '2026-03-23', '2026-03-24', '2026-03-25', '2026-03-26', '2026-03-27', '2026-03-28', '2026-03-29',
-    '2026-03-30', '2026-03-31', '2026-04-01', '2026-04-02', '2026-04-03', '2026-04-04', '2026-04-05'
-]
+# 日付リストを START_DATE から自動で生成する
+start_dt = datetime.strptime(START_DATE, '%Y-%m-%d')
+dates = [(start_dt + timedelta(days=i)).strftime('%Y-%m-%d') for i in range(len(days))]
 
 # 既存のデータを読み込み（is_postedフラグを維持するため）
 existing_data = {}
