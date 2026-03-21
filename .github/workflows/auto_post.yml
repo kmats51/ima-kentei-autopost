@@ -1,0 +1,45 @@
+name: IMA検定 自動投稿（日次7時・12時）
+
+on:
+  # UTC計算(JST-9時間): JST 07:00 -> UTC 22:00, JST 12:00 -> UTC 03:00
+  # GitHub Actionsは数分遅延するため、22:01, 03:01 に仕掛ける
+  schedule:
+    - cron: '1 3,22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  auto-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 依存ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: 自動投稿スクリプトを実行
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          python github_auto_post.py
+
+      - name: 投稿履歴（post_data.json）の更新を保存
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add post_data.json
+          git diff-index --quiet HEAD || git commit -m "Auto: Update post_data.json to mark as posted"
+          git push
