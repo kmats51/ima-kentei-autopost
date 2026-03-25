@@ -53,22 +53,25 @@ for i, day_content in enumerate(days):
         post_time = '07:00'
 
     # 本文抽出
-    body_match = re.search(r'```(?:\w+)?\n(.*?)```', day_content, re.DOTALL)
-    if not body_match: continue
-    body_text = body_match.group(1).strip()
+    blocks = re.findall(r'```(?:\w+)?\n(.*?)```', day_content, re.DOTALL)
+    if not blocks: continue
+    
+    # スレッド判定（全ブロックのどこかにマーカーがあればスレッド扱い）
+    all_blocks_text = "\n".join(blocks)
+    is_thread = '【スレッド🧵】' in all_blocks_text or '【保存推奨🔖】' in all_blocks_text
+    
+    if is_thread:
+        # 各ブロックを1つの投稿として扱う
+        thread_items = [b.strip() for b in blocks if b.strip()]
+    else:
+        # スレッドでない場合は全ブロックを結合して1つの投稿にする
+        thread_items = ["\n\n".join(blocks).strip()]
     
     # 画像（相対パスで保存する）
     img_name = f'{date}.png'
     img_path = img_dir / img_name
     has_image = img_path.exists()
     rel_img_path = f"投稿用画像/{img_name}" if has_image else None
-    
-    # スレッド
-    is_thread = '【スレッド🧵】' in body_text or '【保存推奨🔖】' in body_text
-    if is_thread:
-        thread_items = [p.strip() for p in re.split(r'\n---\n', body_text) if p.strip()]
-    else:
-        thread_items = [body_text]
 
     # フラグの復元
     key = f"{date}_{post_time}"
