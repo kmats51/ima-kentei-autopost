@@ -1,13 +1,32 @@
 import json
 import re
 import os
-from pathlib import Path
+from datetime import datetime, timedelta, timezone
 
 # パス設定（IMA検定ディレクトリを使用）
-root_dir = '/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm'
+root_dir = os.path.dirname(os.path.abspath(__file__))
 md_path = os.path.join(root_dir, '2026-03-20_imakentei_2週間投稿コンテンツ案.md')
 img_dir = os.path.join(root_dir, '投稿用画像')
 output_path = os.path.join(root_dir, 'post_data.json')
+
+# 日本時間(JST)を設定
+jst = timezone(timedelta(hours=9))
+now = datetime.now(jst)
+
+# 既存の投稿済みフラグを保持するため、現在のJSONを読み込む
+existing_posts = {}
+if os.path.exists(output_path):
+    try:
+        with open(output_path, 'r', encoding='utf-8') as f:
+            data = f.read()
+            # 競合マーカーがある場合は無視して新規生成
+            if '<<<<<<<' not in data:
+                old_data = json.loads(data)
+                for p in old_data:
+                    key = f"{p['date']} {p['time']}"
+                    existing_posts[key] = p.get('is_posted', False)
+    except Exception as e:
+        print(f"Warning: Could not read existing post_data.json: {e}")
 
 with open(md_path, 'r', encoding='utf-8') as f:
     content = f.read()
@@ -38,26 +57,32 @@ for i, day_content in enumerate(days):
     body_blocks = re.findall(r'```(?:\w+)?\n(.*?)```', day_content, re.DOTALL)
     if not body_blocks: continue
     
-    # 最初のブロックにスレッドマーカーがあるか
     main_text = body_blocks[0].strip()
     is_thread = '【スレッド🧵】' in main_text or '【スレッド🧵】' in day_content or 'スレッド型' in day_content
     
     if is_thread:
-        # 全てのコードブロックを個別の投稿にする
         thread_items = [b.strip() for b in body_blocks if b.strip()]
     else:
         thread_items = [main_text]
     
-    # 画像
-    img_path = Path(img_dir) / f'{date}.png'
-    has_image = img_path.exists()
+    # 图片（相対パス）
+    img_filename = f'{date}.png'
+    img_rel_path = f'投稿用画像/{img_filename}'
+    img_abs_path = os.path.join(img_dir, img_filename)
+    has_image = os.path.exists(img_abs_path)
     
+    key = f"{date} {post_time}"
+    # 過去の日付・時刻であれば自動的に True、そうでなければ既存の値を採用、既存もなければ False
+    post_datetime = datetime.strptime(key, '%Y-%m-%d %H:%M').replace(tzinfo=jst)
+    is_posted = existing_posts.get(key, now >= post_datetime)
+
     post_data.append({
         'date': date,
         'time': post_time,
         'content': thread_items,
-        'image': str(img_path) if has_image else None,
-        'is_thread': is_thread
+        'image': img_rel_path if has_image else None,
+        'is_thread': is_thread,
+        'is_posted': is_posted
     })
 
 with open(output_path, 'w', encoding='utf-8') as f:

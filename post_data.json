@@ -6,7 +6,8 @@
             "【GA4診断】実は9割の人が見落としている、\n本当にチェックすべき管理画面はどこ？📊\n\n・集客サマリーで見ている人：👍\n・ページとスクリーンを追っている人：📊\n・実はまだ見ていない人：🙋‍♂️\n\nリプライで今の状況を教えてください！\n「その場合はまず〇〇を見て」「理由は△△です」\nと個別にアドバイスを返信します👇"
         ],
         "image": null,
-        "is_thread": false
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-03-24",
@@ -14,8 +15,9 @@
         "content": [
             "「広告のクリック率が低い」より\n「コンバージョン率が低い」のほうが\n実は深刻な問題です。\n\nなぜかというと——\n\nクリック率が低い\n→ 広告文の問題（表現を変えれば改善できる）\n\nコンバージョン率が低い\n→ LPとユーザーのズレ（戦略レベルの問題）\n\n広告文とLPの「訴求のズレ」が\nCPAを高騰させる一番の原因です。\n\nチェック方法⬇️\n\n#Webマーケ #Google広告 #CPA改善"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-24.png",
-        "is_thread": false
+        "image": "投稿用画像/2026-03-24.png",
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-03-25",
@@ -31,8 +33,9 @@
             "【Gem7：User Experience Simulator】\n\"UXリサーチャーAIにLPを辛口評価させる\"\n\nペルソナを「憑依」させた状態で\nLPを閲覧させます。\n\n「文字が小さくて読みにくい」\n「申し込みボタンが見つかりにくい」\n「フォームの項目が多すぎる」\n\n制作者の思い込みではない\nユーザー視点のダメ出しが\n容赦なく指摘されます。\n\n(8/9)",
             "【9つのGem まとめ】\n\n🔵 戦略班（何を・誰に）\n→ Gem1（ペルソナ）\n→ Gem3（市場分析）\n→ Gem4（コンセプト設計）\n\n🟢 制作班（広告を作る）\n→ Gem2（キーワード）\n→ Gem5（広告文）\n\n🔴 分析班（改善する）\n→ Gem6（クエリ仕分け）\n→ Gem7（LP診断）\n→ Gem8（CPA改善）\n→ Gem9（GA4分析）\n\nAIはプロンプトより\n「役割を与えること」が大事。\n\n#IMA検定 #AIマーケティング #Webマーケ\n\n(9/9)"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-25.png",
-        "is_thread": true
+        "image": "投稿用画像/2026-03-25.png",
+        "is_thread": true,
+        "is_posted": false
     },
     {
         "date": "2026-03-26",
@@ -40,14 +43,9 @@
         "content": [
             "GA4の「直帰率」が廃止された話、\n知ってますか？\n\nUA（旧アナリティクス）では\n「直帰率」が重要指標でしたが\nGA4では「エンゲージメント率」に変わりました。\n\n【定義の違い】\n直帰率：1ページだけ見て離脱した割合\nエンゲージメント率：10秒以上滞在 or 2ページ以上閲覧した割合\n\n同じサイトでも\n・直帰率 70%\n・エンゲージメント率 55%\nは両立します。\n\n「どっちで報告すればいい？」\n→ クライアントにはエンゲージメント率を使いましょう。\n\n#GA4 #Webマーケ #アクセス解析"
         ],
-<<<<<<< HEAD
         "image": "投稿用画像/2026-03-26.png",
         "is_thread": false,
         "is_posted": true
-=======
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-26.png",
-        "is_thread": false
->>>>>>> d4ffd4c (Optimize X algorithm strategy and update high-impact infographics for Day 10 and Day 13)
     },
     {
         "date": "2026-03-27",
@@ -56,12 +54,8 @@
             "今週のWebサイト、\n数字は見ましたか？📊\n\n金曜日のこの時間に\n一週間のデータをざっと振り返る習慣、\nじつはかなり使えます。\n\n確認すべきポイントは3つだけ。\n\n① 先週と比べてセッション数は増えた？減った？\n② CV（コンバージョン）は目標に対してどうだった？\n③ 一番読まれたページはどのページ？\n\nこの3つを5分で確認するだけで\n来週の改善ポイントが見えてきます。\n\n皆さんは週次レビュー、やっていますか？👇"
         ],
         "image": null,
-<<<<<<< HEAD
         "is_thread": false,
         "is_posted": true
-=======
-        "is_thread": false
->>>>>>> d4ffd4c (Optimize X algorithm strategy and update high-impact infographics for Day 10 and Day 13)
     },
     {
         "date": "2026-03-28",
@@ -69,8 +63,9 @@
         "content": [
             "【プロの広告コピー3つの型】\n売れる広告主が必ずテストしている\n「3つのアングルチェック」⚖️\n（※画像添付：3アングルの比較表）\n\nどんな商品でも\n必ず3つの切り口で広告文を作ること。\n\n1️⃣ 合理的アングル（価格・スペック）\n2️⃣ 感情的アングル（共感・変化）\n3️⃣ 権威的アングル（実績・第三者評価）\n\n同じ「英語教材」でも\nターゲットに刺さるアングルは全く違います。\nあなたの商材ならどう分ける？図解にまとめました👇\n\n#広告コピー #Webマーケ #IMA検定"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-28.png",
-        "is_thread": false
+        "image": "投稿用画像/2026-03-28.png",
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-03-29",
@@ -78,8 +73,9 @@
         "content": [
             "「キーワードを選び抜く力で勝敗の8割が決まる」\n\n実際にどう選べばいいのか？\nポイントは「今すぐ客」と「お悩み客」を分けること。\n\n🔴 今すぐ客（Buy Intent）\n🟡 お悩み客（Insight）\n\n特に「お悩み客」のKW選びでCVRが3倍変わります。\n【初心者でも迷わないKW掛け合わせ表】を\nリプライ欄に貼っておきますね👇（自己リプライへ誘導）\n\n#検索広告 #キーワード選定 #Google広告"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-29.png",
-        "is_thread": false
+        "image": "投稿用画像/2026-03-29.png",
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-03-30",
@@ -88,7 +84,8 @@
             "Web担当者さんに質問💬\n\nGA4の「集客サマリー」だけで満足していませんか？\n実は9割の人が見落としている画面がもう1つあります。\n\n「その画面、チェックできているか？」\nを診断します！\n\n・見ている人：👍\n・見ていない人：📊\n\nコメントで教えてください！\n「これを見ていないとヤバい理由」を個別に答えます👇"
         ],
         "image": null,
-        "is_thread": false
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-03-31",
@@ -96,8 +93,9 @@
         "content": [
             "【保存版📌】\nGA4で必ず確認すべき\n「3つのレポート」と見るポイント\n\n1️⃣ 集客サマリー\n→ 「どこからユーザーが来ているか」を把握\n→ 急増・急減しているチャネルを毎週チェック\n\n2️⃣ エンゲージメント／ページとスクリーン\n→ 「どのページがよく読まれているか」を把握\n→ 滞在時間が長いページ＝ユーザーが価値を感じているページ\n\n3️⃣ コンバージョン\n→ 「どの流入元からCVが多いのか」を把握\n→ CVが多い流入元に予算を集中させるのが基本戦略\n\nGA4の画面が複雑で迷ったら\nまずこの3つからスタートしましょう。\n\n#GA4 #Webマーケ #アクセス解析"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-03-31.png",
-        "is_thread": false
+        "image": "投稿用画像/2026-03-31.png",
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-04-01",
@@ -109,8 +107,9 @@
             "AIにクエリを判断させる\nプロンプト例👇\n\n---\n以下の検索クエリが\n「〇〇（自社商材）」の\n購入・問い合わせに繋がりそうか判断してください。\n\n各クエリについて\n・意図の推測\n・除外すべきかどうか\n・理由\nを答えてください。\n\nクエリ一覧：（ここに貼り付け）\n---\n\n(4/5)",
             "実際に試すと「求人目的」「DIY目的」などの\nノイズが大量に見つかります。\n（※画像添付：AIによるクエリ仕分けの出力画面キャプチャ）\n\nこれを除外するだけで\n同じ予算でもCVRが1.5〜2倍になるケースがあります。\n\n【クエリを秒速で仕分けるプロンプト】が必要な方は、\nリプライ欄に「プロンプト」と書いてください！\n個別にDMまたは返信で公開します💌\n\n#Google広告 #クエリ分析 #広告運用\n\n(5/5)"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-04-01.png",
-        "is_thread": true
+        "image": "投稿用画像/2026-04-01.png",
+        "is_thread": true,
+        "is_posted": false
     },
     {
         "date": "2026-04-02",
@@ -119,7 +118,8 @@
             "「AIは魔法の杖ではなく優秀な部下」\n\nこれが私がAI活用で\n一番大事だと思っている考え方です。\n\n「いい感じにやっておいて」では\nAIはいい仕事をしません。\n\n必要なのは明確な指示：\n✅ 何のために\n✅ 誰に向けて\n✅ どんな形式で\n\nこれを伝えるだけで\nAIの出力品質は劇的に上がります。\n\n逆に言えば\nAIを使いこなせる人＝\n指示（ディレクション）が上手い人 です。\n\n#AIマーケ #ChatGPT活用 #Webマーケ"
         ],
         "image": null,
-        "is_thread": false
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-04-03",
@@ -128,7 +128,8 @@
             "おつかれさまです🌙\n\n突然ですが質問です。\nあなたが「Webマーケで一番苦手なこと」は何ですか？\n\n① データ分析・レポート\n② 広告文の作成\n③ LP・サイト改善\n\nコメントで教えてください！👇\n\n一番回答が多かった悩みについて、\n【来週、解決プロンプト集】を作成して公開します！📝"
         ],
         "image": null,
-        "is_thread": false
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-04-04",
@@ -136,8 +137,9 @@
         "content": [
             "【保存版📌】\nLP（ランディングページ）の\nCVRが低い時にチェックすべき「3つのズレ」\n（※画像添付：LP改善チェックリスト）\n\n✅ ズレ1：広告文とLPのメッセージ\n✅ ズレ2：ターゲットとトーン\n✅ ズレ3：フォームの項目数\n\nCVRが2%→4%になるだけで、\n同じ予算でCV数が2倍になります。\n\nこのチェックリストを保存して\n週に一度、自分のLPを見直してみてください📊\n\n#LP改善 #CVR最適化 #Webマーケ"
         ],
-        "image": "/Users/kouichimatsumoto/Vault/IMA検定/X_Algorithm/投稿用画像/2026-04-04.png",
-        "is_thread": false
+        "image": "投稿用画像/2026-04-04.png",
+        "is_thread": false,
+        "is_posted": false
     },
     {
         "date": "2026-04-05",
@@ -146,6 +148,7 @@
             "この2週間、AI×マーケのノウハウを配信してきました。\n\n最も反響があったのは、\nこちらの「9つのGem活用法」でした。🚀\n（※ここにDay3の投稿を引用リポスト）\n\nこれからも実務で使える\n「AI×Webマーケ技術」を毎日お届けします。\n\n本気でスキルを武器にしたい方は、\nプロフィールの固定ツイートもチェックしてください！👉 @imakentei\n\n#IMA検定 #Webマーケ #AIマーケティング"
         ],
         "image": null,
-        "is_thread": false
+        "is_thread": false,
+        "is_posted": false
     }
 ]
