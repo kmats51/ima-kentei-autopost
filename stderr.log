@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 74, in <module>
+    main()
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 57, in main
+    with open(json_path, 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/post_data.json'
+Traceback (most recent call last):
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 74, in <module>
+    main()
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 57, in main
+    with open(json_path, 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/post_data.json'
+Traceback (most recent call last):
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 74, in <module>
+    main()
+  File "/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/imakentei_post_once.py", line 57, in main
+    with open(json_path, 'r', encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/post_data.json'
