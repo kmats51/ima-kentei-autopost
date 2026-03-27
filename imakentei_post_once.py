@@ -62,7 +62,6 @@ def post_tweet(data):
     return last_tweet_id
 
 def main():
-    json_path = os.path.join(os.path.dirname(__file__), 'post_data.json')
     now = datetime.now()
     current_date = now.strftime('%Y-%m-%d')
     current_time = now.strftime('%H:%M')
@@ -70,6 +69,8 @@ def main():
     # 念のため、1分前(sleep等でずれた場合)もチェック対象にする
     one_minute_ago = (now - timedelta(minutes=1)).strftime('%H:%M')
 
+    base_dir = '/Users/kouichimatsumoto/Vault/IMA検定/ima-kentei-autopost'
+    json_path = os.path.join(base_dir, 'post_data.json')
     with open(json_path, 'r', encoding='utf-8') as f:
         all_posts = json.load(f)
 
