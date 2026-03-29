@@ -26,13 +26,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 実行環境の診断とログ記録
+      - name: 実行環境の診断
         run: |
-          echo "==== 最終実行ログ ($(date +'%Y-%m-%d %H:%M:%S' -d "+9 hours") JST) ====" > github_action_status.txt
-          echo "時刻 (UTC): $(date)" >> github_action_status.txt
-          if [ -z "${{ secrets.X_API_KEY }}" ]; then echo "❌ X_API_KEY: 未設定 (これが原因の可能性大)" >> github_action_status.txt; else echo "✅ X_API_KEY: 設定済み" >> github_action_status.txt; fi
-          if [ -z "${{ secrets.X_ACCESS_TOKEN }}" ]; then echo "❌ X_ACCESS_TOKEN: 未設定" >> github_action_status.txt; else echo "✅ X_ACCESS_TOKEN: 設定済み" >> github_action_status.txt; fi
-          echo "========================" >> github_action_status.txt
+          echo "==== JST 時刻目安: $(date) ===="
+          if [ -z "${{ secrets.X_API_KEY }}" ]; then echo "❌ X_API_KEY が見つかりません。Secretsの設定を確認してください。"; else echo "✅ X_API_KEY は設定されています。"; fi
+          if [ -z "${{ secrets.X_ACCESS_TOKEN }}" ]; then echo "❌ X_ACCESS_TOKEN が見つかりません。"; else echo "✅ X_ACCESS_TOKEN は設定されています。"; fi
 
       - name: 依存ライブラリをインストール
         run: pip install -r requirements.txt
@@ -45,12 +43,12 @@ jobs:
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          python github_auto_post.py >> github_action_status.txt 2>&1
+          python github_auto_post.py
 
-      - name: ログと実行結果を保存
+      - name: 更新結果を保存（Push）
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git pull origin main --rebase
-          git add post_data.json github_action_status.txt
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto: Update post status and logs" && git push origin main)
+          git add post_data.json
+          git commit -m "Auto: Sync post results" || exit 0
+          git push origin main || echo "⚠️ Warning: Push failed. Please check Repository Settings > Actions > General > Workflow permissions to ensure 'Read and write permissions' is enabled."
