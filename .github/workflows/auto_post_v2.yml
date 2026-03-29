@@ -1,9 +1,8 @@
-name: IMA検定 自動投稿（日次7時・12時）
+name: IMA検定 自動投稿（新システム）
 
 on:
   schedule:
-    # UTC計算(JST-9時間): JST 07:00 -> UTC 22:00, JST 12:00 -> UTC 03:00
-    # GitHub Actionsは数分遅延するため、22:01, 03:01 に仕掛ける
+    # JST 07:01, 12:01
     - cron: '1 3,22 * * *'
   push:
     branches:
@@ -16,7 +15,6 @@ permissions:
 jobs:
   auto-post:
     runs-on: ubuntu-latest
-
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
@@ -29,8 +27,7 @@ jobs:
       - name: 実行環境の診断
         run: |
           echo "==== JST 時刻目安: $(date) ===="
-          if [ -z "${{ secrets.X_API_KEY }}" ]; then echo "❌ X_API_KEY が見つかりません。Secretsの設定を確認してください。"; else echo "✅ X_API_KEY は設定されています。"; fi
-          if [ -z "${{ secrets.X_ACCESS_TOKEN }}" ]; then echo "❌ X_ACCESS_TOKEN が見つかりません。"; else echo "✅ X_ACCESS_TOKEN は設定されています。"; fi
+          if [ -z "${{ secrets.X_API_KEY }}" ]; then echo "❌ X_API_KEY が見つかりません"; else echo "✅ X_API_KEY は設定されています"; fi
 
       - name: 依存ライブラリをインストール
         run: pip install -r requirements.txt
@@ -42,13 +39,12 @@ jobs:
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          python github_auto_post.py
+        run: python github_auto_post.py
 
       - name: 更新結果を保存（Push）
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add post_data.json
-          git commit -m "Auto: Sync post results" || exit 0
-          git push origin main || echo "⚠️ Warning: Push failed. Please check Repository Settings > Actions > General > Workflow permissions to ensure 'Read and write permissions' is enabled."
+          git commit -m "Auto: Sync post results (v2)" || exit 0
+          git push origin main || echo "⚠️ Warning: Push failed. Please check Workflow permissions."
