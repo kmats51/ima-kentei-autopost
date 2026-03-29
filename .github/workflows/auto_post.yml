@@ -26,6 +26,15 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: 実行環境の診断
+        run: |
+          echo "==== 環境チェック ===="
+          echo "時刻 (UTC): $(date)"
+          echo "Python version: $(python --version)"
+          if [ -z "${{ secrets.X_API_KEY }}" ]; then echo "❌ X_API_KEY が設定されていません"; else echo "✅ X_API_KEY は設定されています"; fi
+          if [ -z "${{ secrets.X_ACCESS_TOKEN }}" ]; then echo "❌ X_ACCESS_TOKEN が設定されていません"; else echo "✅ X_ACCESS_TOKEN は設定されています"; fi
+          echo "========================"
+
       - name: 依存ライブラリをインストール
         run: pip install -r requirements.txt
 
