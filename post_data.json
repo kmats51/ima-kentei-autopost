@@ -35,7 +35,7 @@
         ],
         "image": "投稿用画像/2026-03-25.png",
         "is_thread": true,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-03-26",
@@ -115,7 +115,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-10",
