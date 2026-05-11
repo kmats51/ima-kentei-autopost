@@ -29,6 +29,7 @@ jobs:
       - name: Run poster script
         env:
           X_STATE_BASE64: ${{ secrets.X_STATE_BASE64 }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           python3 v3_playwright/ima_playwright_poster.py
 
