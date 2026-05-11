@@ -13,3 +13,5 @@ __pycache__/
 # OS Files
 .DS_Store
 Thumbs.db
+v3_playwright/user_data/
+v3_playwright/state.json
