@@ -159,7 +159,7 @@
         ],
         "image": "投稿用画像/2026-04-11.png",
         "is_thread": true,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-12",
@@ -169,7 +169,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-12",
@@ -179,7 +179,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-13",
@@ -189,7 +189,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-13",
@@ -199,7 +199,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-14",
@@ -209,7 +209,7 @@
         ],
         "image": "投稿用画像/2026-04-14.png",
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-14",
@@ -219,7 +219,7 @@
         ],
         "image": "投稿用画像/2026-04-14.png",
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-15",
@@ -229,7 +229,7 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     },
     {
         "date": "2026-04-15",
@@ -239,6 +239,6 @@
         ],
         "image": null,
         "is_thread": false,
-        "is_posted": false
+        "is_posted": true
     }
 ]

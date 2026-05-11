@@ -27,92 +27,66 @@ def send_slack_notification(message):
 
 async def post_to_x_playwright(post_item):
     """
-    Playwright を使用してブラウザ上で X に投稿する。
+    Playwright を使用してブラウザ上で X に投稿する (Intent URL 方式)。
     """
+    import urllib.parse
+    
+    # 投稿内容のエンコード
+    content = post_item['content'][0]
+    encoded_text = urllib.parse.quote(content)
+    intent_url = f"https://x.com/intent/post?text={encoded_text}"
+    
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
-        
-        # ログイン情報をファイルまたは環境変数から読み込む
+        # ... (中略: state 読み込み部分は維持)
         state_path = V3_DIR / "state.json"
-        
-        # GitHub Actions 等の環境変数に Base64 がある場合は書き出し
         import os
         import base64
         state_b64 = os.environ.get("X_STATE_BASE64")
         if state_b64 and not state_path.exists():
-            print("環境変数から state.json を復元します...")
             with open(state_path, "wb") as f:
                 f.write(base64.b64decode(state_b64))
 
-        if state_path.exists():
-            context = await browser.new_context(
-                storage_state=str(state_path),
-                viewport={"width": 1280, "height": 800}
-            )
-        else:
-            print("警告: ログイン情報 (state.json) が見つかりません。")
-            context = await browser.new_context(
-                viewport={"width": 1280, "height": 800}
-            )
-        
+        context = await browser.new_context(
+            storage_state=str(state_path) if state_path.exists() else None,
+            viewport={"width": 1280, "height": 800}
+        )
         page = await context.new_page()
         
         try:
-            print("[v3_playwright] X にアクセス中...")
-            await page.goto("https://x.com/compose/post", wait_until="domcontentloaded", timeout=60000)
-            
-            # ページが読み込まれるまで少し待機
+            print(f"[v3_playwright] Intent URL にアクセス中: {intent_url[:50]}...")
+            await page.goto(intent_url, wait_until="domcontentloaded", timeout=60000)
             await asyncio.sleep(5)
             
-            # ログインチェック
             if "login" in page.url:
-                raise RuntimeError("X へのログインが必要です。user_data 内にセッションがありません。")
+                raise RuntimeError("X へのログインが必要です。")
 
-            # 投稿内容の入力
-            # スレッド対応（現在は1件目のみ対応、必要に応じて拡張）
-            content = post_item['content'][0]
-            
-            # 投稿エリア（エディタ）を探して入力
-            editor = page.locator('div[data-testid="tweetTextarea_0"]').first
-            await editor.wait_for(timeout=30000)
-            await editor.click()
-            await editor.type(content, delay=50)  # 1文字ずつタイピングして入力を認識させる
-            await asyncio.sleep(2)  # 入力後の反映待ち
+            # 投稿ボタンを待機
+            post_button = page.locator('button[data-testid="tweetButton"]').first
+            await post_button.wait_for(state="visible", timeout=30000)
             
             # 画像のアップロード
             if post_item.get('image'):
                 img_path = BASE_DIR / post_item['image']
                 if img_path.exists():
                     print(f"[v3_playwright] 画像をアップロード中: {img_path.name}")
-                    # ファイル選択用の input を探す
                     async with page.expect_file_chooser() as fc_info:
                         await page.locator('div[data-testid="fileInput"]').click()
                     file_chooser = await fc_info.value
                     await file_chooser.set_files(str(img_path))
-                    # アップロード完了を少し待つ
                     await asyncio.sleep(5)
-                else:
-                    print(f"[v3_playwright] 警告: 画像が見つかりません: {img_path}")
 
-            # 他のポップアップ（アップグレード勧誘など）を消すために一度 Escape を押す
-            await page.keyboard.press("Escape")
-            await asyncio.sleep(1)
-
-            # 投稿ボタンをクリック
-            post_button = page.locator('[data-testid*="tweetButton"]').first
-            await post_button.wait_for(state="visible", timeout=10000)
-            
-            await post_button.click(force=True)
-            print("[v3_playwright] 投稿ボタンを強制クリックしました。")
-            # 投稿完了を待機
+            # 投稿
+            await post_button.click()
+            print("[v3_playwright] 投稿ボタンをクリックしました。")
             await asyncio.sleep(10)
 
         except Exception as e:
-            # エラー時にスクリーンショットを撮る（デバッグ用）
             await page.screenshot(path=str(V3_DIR / "error_screenshot.png"))
             raise e
         finally:
             await context.close()
+            await browser.close()
 
 async def main():
     if not POST_DATA_PATH.exists():
@@ -134,6 +108,13 @@ async def main():
         # スケジュール時刻を比較
         post_datetime_str = f"{post['date']} {post['time']}"
         post_datetime = datetime.strptime(post_datetime_str, '%Y-%m-%d %H:%M').replace(tzinfo=JST)
+
+        # 過去すぎるデータ（24時間以上前）はスキップ
+        if now > post_datetime + timedelta(days=1):
+            print(f"[v3_playwright] 過去データのためスキップします: {post_datetime_str}")
+            post['is_posted'] = True # 投稿済み扱いにして滞留を防ぐ
+            updated = True
+            continue
 
         if now >= post_datetime:
             try:
