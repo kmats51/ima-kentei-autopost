@@ -5,8 +5,8 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv  # type: ignore
 
-# .env ファイルから環境変数を読み込む
-load_dotenv()
+# .env ファイルから環境変数を読み込む（スクリプトと同じフォルダの.envを参照）
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
 
 # X API 認証情報の取得
 API_KEY = os.getenv('X_API_KEY')
@@ -60,7 +60,7 @@ def run_scheduler():
     """
     JSONを読み込んで、現在時刻に合う投稿があれば実行する
     """
-    json_path = '/Users/kouichimatsumoto/Vault/Work/SNS・オウンドメディアコンテンツ運用/X_Algorithm/post_data.json'
+    json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'post_data.json')
     
     while True:
         now = datetime.now()
