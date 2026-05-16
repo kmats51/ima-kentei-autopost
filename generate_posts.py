@@ -98,33 +98,39 @@ def load_env():
 
 
 def analyze_csv(csv_path):
-    """X Analytics CSVを分析してパフォーマンスサマリーを返す"""
+    """X Analytics CSVを分析してパフォーマンスサマリーを返す（日本語列名対応）"""
     posts = []
 
     with open(csv_path, 'r', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            text = row.get('Tweet text', '').strip()
+            # 日本語列名と英語列名の両方に対応
+            text = (row.get('ポスト本文') or row.get('Tweet text', '')).strip()
             if not text:
                 continue
             # 広告投稿を除外
             if any(p in text for p in AD_PATTERNS):
                 continue
             try:
-                imp = int(row.get('impressions', 0) or 0)
-                eng_rate_str = row.get('engagement rate', '0').replace('%', '').strip()
-                eng_rate = float(eng_rate_str or 0)
-                replies = int(row.get('replies', 0) or 0)
-                likes = int(row.get('likes', 0) or 0)
-                retweets = int(row.get('retweets', 0) or 0)
-                profile_clicks = int(row.get('profile clicks', 0) or 0)
-                url_clicks = int(row.get('url clicks', 0) or 0)
+                imp = int(row.get('インプレッション数') or row.get('impressions', 0) or 0)
+                eng_count = int(row.get('エンゲージメント') or row.get('engagements', 0) or 0)
+                # エンゲージメント率を算出（英語CSVはパーセント文字列の場合もある）
+                eng_rate_raw = row.get('engagement rate', '')
+                if eng_rate_raw:
+                    eng_rate = float(eng_rate_raw.replace('%', '').strip() or 0)
+                else:
+                    eng_rate = round(eng_count / imp * 100, 2) if imp > 0 else 0
+                replies = int(row.get('返信') or row.get('replies', 0) or 0)
+                likes = int(row.get('いいね') or row.get('likes', 0) or 0)
+                retweets = int(row.get('リポスト') or row.get('retweets', 0) or 0)
+                profile_clicks = int(row.get('プロフィールへのアクセス数') or row.get('profile clicks', 0) or 0)
+                url_clicks = int(row.get('URLのクリック数') or row.get('url clicks', 0) or 0)
             except (ValueError, KeyError):
                 continue
 
             posts.append({
                 'text': text,
-                'date': row.get('time', ''),
+                'date': row.get('日付') or row.get('time', ''),
                 'imp': imp,
                 'eng_rate': eng_rate,
                 'replies': replies,
@@ -174,6 +180,24 @@ def analyze_csv(csv_path):
         'thread_count': len(thread_posts),
         'top5': top5,
     }
+
+
+def find_auto_start():
+    """post_data.jsonの最後の未投稿日の2日後（平日）を開始日として返す"""
+    jst = timezone(timedelta(hours=9))
+    post_data_path = os.path.join(BASE_DIR, 'post_data.json')
+    if os.path.exists(post_data_path):
+        with open(post_data_path, 'r', encoding='utf-8') as f:
+            posts = json.load(f)
+        future = [p for p in posts if not p.get('is_posted', False)]
+        if future:
+            last = sorted(future, key=lambda p: f"{p['date']} {p['time']}")[-1]
+            last_date = datetime.strptime(last['date'], '%Y-%m-%d').replace(tzinfo=jst)
+            next_date = last_date + timedelta(days=2)
+            while next_date.weekday() >= 5:  # 土日をスキップ
+                next_date += timedelta(days=1)
+            return next_date.strftime('%Y-%m-%d')
+    return None
 
 
 def build_schedule(start_str, count):
@@ -370,11 +394,14 @@ def save_drafts(posts):
 
 
 def main():
+    jst = timezone(timedelta(hours=9))
     parser = argparse.ArgumentParser(description='X投稿文をGemini APIで自動生成')
     parser.add_argument('--csv', required=True, help='X Analytics CSVファイルのパス')
-    parser.add_argument('--count', type=int, default=4, help='生成する投稿数（デフォルト: 4）')
-    parser.add_argument('--start', help='投稿開始日 YYYY-MM-DD（デフォルト: 次の月曜日）')
-    parser.add_argument('--deadline', default='2026-06-09', help='申込み締切日（デフォルト: 2026-06-09）')
+    parser.add_argument('--count', type=int, default=6, help='生成する投稿数（デフォルト: 6）')
+    parser.add_argument('--start', default='auto',
+                        help='投稿開始日 YYYY-MM-DD / "auto"=最終投稿日の2日後（デフォルト）')
+    parser.add_argument('--deadline', default=None,
+                        help='申込み締切日（デフォルト: 生成日から4週間後）')
     args = parser.parse_args()
 
     api_key = load_env()
@@ -382,6 +409,18 @@ def main():
     if not os.path.exists(args.csv):
         print(f"❌ エラー: CSVファイルが見つかりません: {args.csv}")
         exit(1)
+
+    # 開始日の決定
+    start = args.start
+    if start == 'auto':
+        start = find_auto_start()
+        if start:
+            print(f"📅 開始日を自動計算: {start}（最終投稿日の2日後）")
+        else:
+            print("📅 開始日を自動計算: 次の月曜日（未投稿なし）")
+
+    # 締切日の決定
+    deadline = args.deadline or (datetime.now(jst) + timedelta(weeks=4)).strftime('%Y-%m-%d')
 
     print(f"📊 CSVを分析中: {args.csv}")
     analysis = analyze_csv(args.csv)
@@ -391,12 +430,12 @@ def main():
 
     print(f"   有機投稿数: {analysis['total']}件 / 平均IMP: {analysis['avg_imp']} / 問いかけあり: {analysis['q_count']}件")
 
-    schedule = build_schedule(args.start, args.count)
+    schedule = build_schedule(start, args.count)
     print(f"📅 投稿スケジュール:")
     for date, time in schedule:
         print(f"   - {date} {time}")
 
-    prompt = build_prompt(analysis, schedule, args.deadline)
+    prompt = build_prompt(analysis, schedule, deadline)
     raw = call_gemini_api(prompt, api_key)
 
     try:

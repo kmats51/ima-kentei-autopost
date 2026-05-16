@@ -1,0 +1,63 @@
+name: コンテンツ自動生成
+
+on:
+  push:
+    paths:
+      - 'analytics/*.csv'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 実行時刻を確認
+        run: |
+          echo "JST: $(TZ=Asia/Tokyo date '+%Y-%m-%d %H:%M:%S')"
+
+      - name: 依存ライブラリをインストール
+        run: pip install -r requirements.txt
+
+      - name: 最新CSVを特定
+        id: csv
+        run: |
+          CSV=$(ls analytics/*.csv 2>/dev/null | sort | tail -1)
+          if [ -z "$CSV" ]; then
+            echo "⚠️ analytics/ フォルダにCSVがありません。スキップします。"
+            echo "found=false" >> $GITHUB_OUTPUT
+          else
+            echo "最新CSV: $CSV"
+            echo "path=$CSV" >> $GITHUB_OUTPUT
+            echo "found=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 投稿文を生成
+        if: steps.csv.outputs.found == 'true'
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python3 generate_posts.py \
+            --csv "${{ steps.csv.outputs.path }}" \
+            --start auto \
+            --count 6
+
+      - name: Git設定
+        if: steps.csv.outputs.found == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: 自動承認・post_data.jsonに追加・プッシュ
+        if: steps.csv.outputs.found == 'true'
+        run: python3 approve_posts.py --auto
