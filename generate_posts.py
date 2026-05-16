@@ -296,7 +296,7 @@ def call_gemini_api(prompt, api_key):
     """Gemini APIを呼び出して投稿文を生成"""
     print("⏳ Gemini APIで投稿文を生成中...")
 
-    model = "gemini-2.0-flash"
+    model = "gemini-3.1-flash-lite"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     headers = {"Content-Type": "application/json", "x-goog-api-key": api_key}
     system_instruction = "あなたはX（旧Twitter）のコンテンツ戦略の専門家です。指示通りのJSON形式のみを返してください。JSONの前後に説明文を入れないでください。"
