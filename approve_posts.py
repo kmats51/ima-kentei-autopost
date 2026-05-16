@@ -2,14 +2,16 @@
 投稿承認・キュー追加スクリプト
 
 使い方:
-  python3 approve_posts.py
+  python3 approve_posts.py           # 対話形式（1件ずつ確認）
+  python3 approve_posts.py --auto    # 全件自動承認・自動プッシュ
 
 generate_posts.py で生成した draft_posts.json を読み込み、
-1件ずつ確認して承認した投稿を post_data.json に追加、GitHubへプッシュする。
+承認した投稿を post_data.json に追加、GitHubへプッシュする。
 """
 
 import os
 import json
+import argparse
 import subprocess
 from datetime import datetime
 
@@ -39,6 +41,10 @@ def print_post(post, index, total):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--auto', action='store_true', help='全件自動承認・自動プッシュ（確認なし）')
+    args = parser.parse_args()
+
     if not os.path.exists(DRAFT_JSON):
         print(f"❌ {DRAFT_JSON} が見つかりません。")
         print("   先に generate_posts.py を実行してください:")
@@ -52,34 +58,40 @@ def main():
         print("ドラフトが空です。")
         exit(0)
 
-    print(f"\n📋 投稿ドラフトの確認（{len(drafts)}件）")
-    print("   各投稿を確認してY（承認）/ n（スキップ）/ q（中断）で応答してください\n")
-
     approved = []
 
-    for i, post in enumerate(drafts, 1):
-        print_post(post, i, len(drafts))
+    if args.auto:
+        print(f"\n🤖 自動承認モード: {len(drafts)}件をすべて承認します\n")
+        for post in drafts:
+            print_post(post, drafts.index(post) + 1, len(drafts))
+            clean = {k: v for k, v in post.items() if k != 'generation_note'}
+            approved.append(clean)
+    else:
+        print(f"\n📋 投稿ドラフトの確認（{len(drafts)}件）")
+        print("   各投稿を確認してY（承認）/ n（スキップ）/ q（中断）で応答してください\n")
 
-        while True:
-            answer = input("\n  承認しますか？ [Y/n/q]: ").strip().lower()
-            if answer in ('', 'y', 'yes'):
-                # generation_noteは投稿データに不要なので除去
-                clean = {k: v for k, v in post.items() if k != 'generation_note'}
-                approved.append(clean)
-                print("  ✅ 承認しました")
-                break
-            elif answer in ('n', 'no'):
-                print("  ❌ スキップしました")
-                break
-            elif answer in ('q', 'quit'):
-                print("\n中断しました。承認済みの投稿のみ処理します。")
-                break
+        for i, post in enumerate(drafts, 1):
+            print_post(post, i, len(drafts))
+
+            while True:
+                answer = input("\n  承認しますか？ [Y/n/q]: ").strip().lower()
+                if answer in ('', 'y', 'yes'):
+                    clean = {k: v for k, v in post.items() if k != 'generation_note'}
+                    approved.append(clean)
+                    print("  ✅ 承認しました")
+                    break
+                elif answer in ('n', 'no'):
+                    print("  ❌ スキップしました")
+                    break
+                elif answer in ('q', 'quit'):
+                    print("\n中断しました。承認済みの投稿のみ処理します。")
+                    break
+                else:
+                    print("  Y（承認）/ n（スキップ）/ q（中断）のいずれかを入力してください")
             else:
-                print("  Y（承認）/ n（スキップ）/ q（中断）のいずれかを入力してください")
-        else:
-            continue
-        if answer in ('q', 'quit'):
-            break
+                continue
+            if answer in ('q', 'quit'):
+                break
 
     if not approved:
         print("\n承認された投稿がありません。終了します。")
@@ -121,13 +133,13 @@ def main():
         fmt = "スレッド" if p.get('is_thread') else "シングル"
         print(f"   - {p['date']} {p['time']} （{fmt}）")
 
-    # GitHubへのプッシュ確認
-    print()
-    answer = input("GitHubにプッシュして自動投稿を有効化しますか？ [Y/n]: ").strip().lower()
-
-    if answer not in ('', 'y', 'yes'):
-        print("プッシュをスキップしました（手動で git push してください）")
-        exit(0)
+    # GitHubへのプッシュ確認（--autoなら確認なしでプッシュ）
+    if not args.auto:
+        print()
+        answer = input("GitHubにプッシュして自動投稿を有効化しますか？ [Y/n]: ").strip().lower()
+        if answer not in ('', 'y', 'yes'):
+            print("プッシュをスキップしました（手動で git push してください）")
+            exit(0)
 
     date_range = f"{new_posts[0]['date']}〜{new_posts[-1]['date']}"
     commit_msg = f"Auto: {len(new_posts)}件の生成投稿を追加 ({date_range})"
